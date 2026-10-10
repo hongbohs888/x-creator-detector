@@ -1,0 +1,184 @@
+/* X 博主探测 · 页面样式。所有类名都带 xfl- 前缀，不影响 X 自己的样式。 */
+
+:root {
+  --xfl-text: #0f1419;
+  --xfl-sub: #536471;
+  --xfl-line: #eff3f4;
+  --xfl-bg: #ffffff;
+  --xfl-hover: rgba(15, 20, 25, 0.04);
+  --xfl-shadow: 0 8px 28px rgba(101, 119, 134, 0.28);
+  --xfl-c0: #536471;
+  --xfl-c1: #1570b8;
+  --xfl-c2: #0a7d4f;
+  --xfl-c3: #b25e00;
+  --xfl-c4: #c8102e;
+  --xfl-gold: #9a6b00;
+  --xfl-purple: #6b3fc4;
+  --xfl-teal: #0b7285;
+}
+
+:root.xfl-dark {
+  --xfl-text: #e7e9ea;
+  --xfl-sub: #8b98a5;
+  --xfl-line: #2f3336;
+  --xfl-bg: #16181c;
+  --xfl-hover: rgba(231, 233, 234, 0.06);
+  --xfl-shadow: 0 8px 28px rgba(0, 0, 0, 0.6);
+  --xfl-c0: #8b98a5;
+  --xfl-c1: #6cb8f6;
+  --xfl-c2: #4fd3a0;
+  --xfl-c3: #ffad42;
+  --xfl-c4: #ff6b7d;
+  --xfl-gold: #f0c04a;
+  --xfl-purple: #b39bff;
+  --xfl-teal: #66d9e8;
+}
+
+/* ---------- 徽标 ---------- */
+
+.xfl-badge {
+  display: inline-flex;
+  align-items: center;
+  align-self: center;
+  flex-shrink: 0;
+  gap: 4px;
+  margin-left: 4px;
+  font: 500 12px/16px -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Segoe UI', sans-serif;
+  white-space: nowrap;
+  cursor: default;
+}
+
+.xfl-count {
+  padding: 0 6px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--xfl-c0);
+  background: color-mix(in srgb, var(--xfl-c0) 14%, transparent);
+}
+.xfl-t1 { color: var(--xfl-c1); background: color-mix(in srgb, var(--xfl-c1) 14%, transparent); }
+.xfl-t2 { color: var(--xfl-c2); background: color-mix(in srgb, var(--xfl-c2) 15%, transparent); }
+.xfl-t3 { color: var(--xfl-c3); background: color-mix(in srgb, var(--xfl-c3) 16%, transparent); }
+.xfl-t4 { color: var(--xfl-c4); background: color-mix(in srgb, var(--xfl-c4) 15%, transparent); }
+
+.xfl-tag {
+  padding: 0 5px;
+  border-radius: 4px;
+  font-size: 11px;
+  color: var(--xfl-c0);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, currentColor 45%, transparent);
+}
+.xfl-tag-mutual { color: var(--xfl-c2); }
+.xfl-tag-fy { color: var(--xfl-c1); }
+.xfl-tag-bigv { color: var(--xfl-gold); }
+.xfl-tag-farm { color: var(--xfl-c3); }
+/* 更严重的一档：红底实心，一眼能和「疑似互粉」分开 */
+.xfl-tag-farm2 { color: #fff; background: var(--xfl-c4); box-shadow: none; font-weight: 700; }
+:root.xfl-dark .xfl-tag-farm2 { color: #0f1419; }
+.xfl-tag-new { color: var(--xfl-purple); }
+.xfl-tag-restart { color: var(--xfl-teal); }
+.xfl-tag-hot { color: var(--xfl-c4); }
+.xfl-tag-cold, .xfl-tag-old { color: var(--xfl-c0); }
+
+/* ---------- 悬停详情卡 ---------- */
+
+.xfl-card {
+  position: fixed;
+  z-index: 2147483000;
+  pointer-events: none; /* 只是看的，不挡住下面帖子的点击 */
+  width: 290px;
+  box-sizing: border-box;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid var(--xfl-line);
+  background: var(--xfl-bg);
+  box-shadow: var(--xfl-shadow);
+  color: var(--xfl-text);
+  font: 400 13px/18px -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Segoe UI', sans-serif;
+}
+.xfl-card-head { display: flex; align-items: baseline; gap: 6px; margin-bottom: 10px; overflow: hidden; }
+.xfl-card-head strong { font-size: 15px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.xfl-card-head span { color: var(--xfl-sub); flex-shrink: 0; }
+.xfl-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 10px; }
+.xfl-stat { padding: 6px 8px; border-radius: 8px; background: var(--xfl-hover); }
+.xfl-stat b { display: block; font-size: 14px; font-variant-numeric: tabular-nums; }
+.xfl-stat span { font-size: 11px; color: var(--xfl-sub); }
+.xfl-card-row { display: flex; gap: 10px; padding: 2px 0; }
+.xfl-card-k { flex: 0 0 56px; color: var(--xfl-sub); }
+.xfl-card-v { flex: 1; min-width: 0; word-break: break-all; }
+.xfl-card-tags { margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--xfl-line); }
+.xfl-card-tag { display: flex; align-items: baseline; gap: 6px; padding: 2px 0; font-size: 12px; color: var(--xfl-sub); }
+.xfl-card-tag .xfl-tag { flex-shrink: 0; line-height: 16px; }
+
+/* ---------- 转发榜 ---------- */
+
+#xfl-rt-panel {
+  margin: 4px 16px 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--xfl-line);
+  border-radius: 16px;
+  color: var(--xfl-text);
+  font: 400 14px/20px -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Segoe UI', sans-serif;
+}
+.xfl-p-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.xfl-p-title { display: flex; align-items: baseline; gap: 8px; min-width: 0; }
+.xfl-p-title strong { font-size: 16px; }
+.xfl-p-title span { font-size: 12px; color: var(--xfl-sub); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.xfl-p-actions { display: flex; gap: 6px; flex-shrink: 0; }
+.xfl-p-sub { margin-top: 4px; font-size: 12px; line-height: 18px; color: var(--xfl-sub); }
+.xfl-p-empty { margin-top: 10px; font-size: 13px; color: var(--xfl-sub); }
+
+.xfl-btn {
+  padding: 3px 12px;
+  border: 0;
+  border-radius: 999px;
+  font: 600 12px/20px -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Segoe UI', sans-serif;
+  color: var(--xfl-bg);
+  background: var(--xfl-text);
+  cursor: pointer;
+}
+.xfl-btn:hover { opacity: 0.85; }
+.xfl-btn-ghost { color: var(--xfl-text); background: transparent; box-shadow: inset 0 0 0 1px var(--xfl-line); }
+.xfl-btn-ghost:hover { opacity: 1; background: var(--xfl-hover); }
+
+.xfl-btn-on, .xfl-btn-on:hover { color: #fff; background: var(--xfl-c1); box-shadow: none; }
+:root.xfl-dark .xfl-btn-on { color: #0f1419; }
+
+.xfl-p-list { margin: 8px -6px 0; }
+.xfl-p-row { display: flex; align-items: center; gap: 10px; padding: 6px; border-radius: 10px; }
+.xfl-p-row:hover { background: var(--xfl-hover); }
+.xfl-p-user { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; color: inherit; text-decoration: none; }
+.xfl-p-rank { flex: 0 0 18px; text-align: center; font-size: 12px; font-weight: 700; color: var(--xfl-sub); font-variant-numeric: tabular-nums; }
+.xfl-p-avatar { flex: 0 0 32px; width: 32px; height: 32px; border-radius: 50%; background: var(--xfl-hover); object-fit: cover; }
+.xfl-p-who { flex: 1; min-width: 0; }
+.xfl-p-name { display: flex; align-items: center; min-width: 0; }
+.xfl-p-name strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; }
+.xfl-p-handle { font-size: 12px; line-height: 16px; color: var(--xfl-sub); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.xfl-p-new, .xfl-p-followed { margin-left: 6px; }
+.xfl-p-new { color: var(--xfl-c1); font-weight: 600; }
+.xfl-p-new::before, .xfl-p-followed::before { content: '· '; color: var(--xfl-sub); font-weight: 400; }
+.xfl-p-cnt {
+  flex: 0 0 104px;
+  padding: 4px 6px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: inherit;
+  text-align: right;
+  font: 600 12px/16px -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Segoe UI', sans-serif;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+}
+.xfl-p-cnt:hover { background: var(--xfl-hover); }
+.xfl-p-cnt span { display: block; }
+.xfl-p-bar { display: block; height: 3px; margin: 3px 0 0 auto; border-radius: 2px; background: var(--xfl-c1); }
+
+/* 展开后的帖子明细 */
+.xfl-p-posts { margin: 0 6px 8px 34px; padding-left: 10px; border-left: 2px solid var(--xfl-line); }
+.xfl-p-post { display: flex; align-items: baseline; gap: 8px; padding: 4px 6px; border-radius: 8px; font-size: 13px; line-height: 18px; color: inherit; text-decoration: none; }
+.xfl-p-post:hover { background: var(--xfl-hover); }
+.xfl-p-kind { flex-shrink: 0; padding: 0 5px; border-radius: 4px; font-size: 11px; font-weight: 600; color: var(--xfl-c2); background: color-mix(in srgb, var(--xfl-c2) 15%, transparent); }
+.xfl-p-kind-q { color: var(--xfl-purple); background: color-mix(in srgb, var(--xfl-purple) 15%, transparent); }
+.xfl-p-text { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.xfl-p-time { flex-shrink: 0; font-size: 12px; color: var(--xfl-sub); font-variant-numeric: tabular-nums; }
+.xfl-p-more { display: block; margin: 8px auto 0; }

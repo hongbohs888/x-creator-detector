@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>X 博主探测</title>
+<style>
+  :root { color-scheme: light dark; --line: rgba(128, 128, 128, 0.25); --sub: #6b7785; --accent: #1d9bf0; }
+  * { box-sizing: border-box; }
+  body { width: 370px; margin: 0; padding: 14px 16px 16px; font: 13px/1.5 -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif; }
+  header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+  h1 { margin: 0; font-size: 16px; }
+  .note { margin: 0 0 10px; font-size: 12px; color: var(--sub); }
+  .health { display: flex; gap: 8px; padding: 8px 10px; border-radius: 8px; font-size: 12px; background: rgba(128, 128, 128, 0.12); }
+  .health i { flex: 0 0 8px; height: 8px; margin-top: 5px; border-radius: 50%; background: #8b98a5; }
+  .health.ok i { background: #00ba7c; }
+  .health.warn i { background: #ffad1f; }
+  .health.bad i { background: #f4212e; }
+  h2 { margin: 14px 0 6px; padding-top: 12px; border-top: 1px solid var(--line); font-size: 12px; font-weight: 600; color: var(--sub); }
+  label.row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 4px 0; }
+  input[type="checkbox"] { width: 15px; height: 15px; margin: 0; accent-color: var(--accent); }
+  input[type="number"], select { width: 96px; padding: 3px 6px; border: 1px solid var(--line); border-radius: 6px; font: inherit; background: transparent; color: inherit; }
+  select { width: 150px; }
+
+  /* 标签规则：一个标签一张卡片 */
+  .rule { margin-bottom: 6px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 10px; }
+  .rule-head { display: flex; align-items: center; gap: 8px; }
+  .rule-head b { flex-shrink: 0; font-size: 13px; }
+  .rule-head span { font-size: 12px; color: var(--sub); }
+  .cond { margin: 6px 0 0 23px; font-size: 12px; line-height: 2; }
+  .cond input[type="number"] { width: 62px; padding: 1px 4px; text-align: center; font-size: 12px; }
+  .cond input.wide { width: 76px; }
+  .cond em { font-style: normal; color: var(--sub); }
+  .cond b.severe { padding: 1px 5px; border-radius: 4px; color: #fff; background: #c8102e; }
+
+  .data { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .data span { font-size: 12px; color: var(--sub); }
+  button { padding: 4px 12px; border: 1px solid var(--line); border-radius: 999px; font: inherit; background: transparent; color: inherit; cursor: pointer; }
+  button:hover { border-color: var(--accent); color: var(--accent); }
+  .btns { display: flex; gap: 6px; flex-shrink: 0; }
+</style>
+</head>
+<body>
+  <header>
+    <h1>X 博主探测</h1>
+    <label class="row"><span>启用</span><input type="checkbox" data-key="enabled"></label>
+  </header>
+  <p class="note">只读取 X 页面已经加载的数据，不发任何额外请求。改完设置立即生效。</p>
+  <div id="health" class="health"><i></i><span>正在检查运行状态…</span></div>
+
+  <h2>显示</h2>
+  <label class="row"><span>标签</span>
+    <select data-key="tagMode">
+      <option value="all">全部显示</option>
+      <option value="one">只留最重要的一个</option>
+      <option value="none">只显示粉丝数</option>
+    </select>
+  </label>
+  <label class="row"><span>粉丝数按量级分五档颜色</span><input type="checkbox" data-key="colorTiers"></label>
+  <label class="row"><span>鼠标悬停显示详情卡</span><input type="checkbox" data-key="hoverCard"></label>
+  <label class="row"><span>个人主页显示转发榜</span><input type="checkbox" data-key="rtPanel"></label>
+  <label class="row"><span>转发榜默认显示前几名</span><input type="number" min="3" max="50" data-key="rtTopN"></label>
+  <label class="row"><span>「多翻几屏」一次翻几屏</span><input type="number" min="1" max="20" data-key="autoScrollRounds"></label>
+
+  <h2>标签规则</h2>
+  <p class="note">每个标签前面的勾是开关。方框里的数字可以改；一个标签里有几个条件时，要全部满足才会标上。</p>
+
+  <div class="rule">
+    <label class="rule-head"><input type="checkbox" data-key="tags.mutual"><b>互关</b><span>你们互相关注</span></label>
+  </div>
+
+  <div class="rule">
+    <label class="rule-head"><input type="checkbox" data-key="tags.followsYou"><b>关注了你</b><span>他关注了你，你还没回关</span></label>
+  </div>
+
+  <div class="rule">
+    <label class="rule-head"><input type="checkbox" data-key="tags.bigV"><b>大V</b><span>粉丝多，而且不是靠互相关注换来的</span></label>
+    <p class="cond">粉丝至少 <input class="wide" type="number" min="0" step="1000" data-key="th.bigVFollowers"> 个，并且粉丝数是关注数的 <input type="number" min="1" step="1" data-key="th.bigVRatio"> 倍以上</p>
+  </div>
+
+  <div class="rule">
+    <label class="rule-head"><input type="checkbox" data-key="tags.mutualFarm"><b>疑似互粉 / 互粉号</b><span>关注了一大堆人，粉丝却没比关注多多少</span></label>
+    <p class="cond">关注了超过 <input type="number" min="0" step="50" data-key="th.farmFollowing"> 人，并且粉丝数不到关注数的 <input type="number" min="1" step="1" data-key="th.farmTimes"> 倍，标<b>疑似互粉</b><br>其中关注数和粉丝数接近的（关注是粉丝的 <input type="number" min="1" step="5" data-key="th.farmSevere" data-scale="100"> % 到 <input type="number" min="100" step="10" data-key="th.farmMax" data-scale="100"> %），直接标更严重的<b class="severe">互粉号</b><br><em>下面两种情况两档都不标：关注数不到上面第一个数字的小号；关注比粉丝多出一大截的号（关注了很多人但没人回关，是普通账号，不是互粉）。</em></p>
+  </div>
+
+  <div class="rule">
+    <label class="rule-head"><input type="checkbox" data-key="tags.restart"><b>老号重启</b><span>注册好几年的号，停了很久之后最近又开始发</span></label>
+    <p class="cond">注册超过 <input type="number" min="1" step="1" data-key="th.restartYears"> 年，并且满足下面任意一种：<br>
+      ① 停更至少 <input type="number" min="1" step="1" data-key="th.restartGapMonths"> 个月，最近 <input type="number" min="1" step="1" data-key="th.restartWithinMonths"> 个月内恢复发帖，恢复后已发至少 <input type="number" min="1" step="1" data-key="th.restartSince"> 条<br>
+      ② 最近 30 天至少发了 <input type="number" min="1" step="1" data-key="th.restartMinPosts"> 条，并且发帖速度是以前的 <input type="number" min="1" step="1" data-key="th.restartTimes"> 倍以上<br>
+      <em>第 ① 种最准，是在他主页上直接看到的停更。要打开他的主页、往下翻到停更前的帖子才看得出来。</em></p>
+  </div>
+
+  <div class="rule">
+    <label class="rule-head"><input type="checkbox" data-key="tags.newAcct"><b>新号</b><span>刚注册不久</span></label>
+    <p class="cond">注册不到 <input type="number" min="1" step="30" data-key="th.newDays"> 天 <em>（180 天约半年）</em></p>
+  </div>
+
+  <div class="rule">
+    <label class="rule-head"><input type="checkbox" data-key="tags.oldAcct"><b>老号</b><span>注册很多年</span></label>
+    <p class="cond">注册超过 <input type="number" min="1" step="1" data-key="th.oldYears"> 年</p>
+  </div>
+
+  <div class="rule">
+    <label class="rule-head"><input type="checkbox" data-key="tags.highEng"><b>高互动</b><span>看的人里，愿意点赞转发回复的比例高</span></label>
+    <p class="cond">每 100 次浏览，至少有 <input type="number" min="0" step="0.5" data-key="th.highEng"> 次互动</p>
+  </div>
+
+  <div class="rule">
+    <label class="rule-head"><input type="checkbox" data-key="tags.lowEng"><b>低互动</b><span>有人看，但几乎没人理</span></label>
+    <p class="cond">每 1000 次浏览，不到 <input type="number" min="0" step="0.5" data-key="th.lowEng" data-scale="10"> 次互动，并且粉丝至少 <input class="wide" type="number" min="0" step="500" data-key="th.lowEngMinFollowers"> 个</p>
+  </div>
+
+  <p class="note">互动 = 点赞 + 转发 + 回复 + 引用。每条帖子单独算，取中间值，一条爆款或广告帖带不偏结果。至少看到他 3 条帖子才会判断。<br>想知道某个账号为什么被标上，把鼠标移到它的徽标上，详情卡里写着依据。</p>
+
+  <h2>本地数据</h2>
+  <label class="row"><span>自动清理多久没再出现的数据</span>
+    <select data-key="keepDays" data-type="number">
+      <option value="7">7 天</option>
+      <option value="30">30 天</option>
+      <option value="90">90 天</option>
+      <option value="0">不自动清理</option>
+    </select>
+  </label>
+  <p class="note" id="cleanup">每 6 小时自动清理一次，X 页面没开着也会执行。</p>
+  <div class="data">
+    <span id="stats">读取中…</span>
+    <div class="btns">
+      <button id="reset" type="button">恢复默认</button>
+      <button id="clear" type="button">清空数据</button>
+    </div>
+  </div>
+
+  <script src="defaults.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>
