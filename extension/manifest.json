@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "X 博主探测",
-  "version": "1.4.0",
+  "version": "1.4.2",
   "description": "在 X 页面直接显示粉丝数、账号标签和转发榜。只读取页面已经加载的数据，不发任何额外请求。",
   "minimum_chrome_version": "111",
   "permissions": ["storage", "alarms"],

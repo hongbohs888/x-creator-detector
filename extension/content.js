@@ -44,6 +44,12 @@
     return e;
   };
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  // 浏览器里装了翻译插件时，别让它把我们画的内容再翻译一遍（会把名字挤没）
+  const keepOriginal = (node) => {
+    node.setAttribute('translate', 'no');
+    node.classList.add('notranslate');
+    return node;
+  };
 
   // ---------- 本地存储 ----------
 
@@ -399,7 +405,11 @@
 
   function fillBadge(badge, r) {
     badge.textContent = '';
-    badge.appendChild(el('span', 'xfl-count xfl-t' + tierOf(r.f), fmtCount(r.f)));
+    // 数字前面写明「粉丝」，不认识这个插件的人也能看懂这是什么数
+    const count = el('span', 'xfl-count xfl-t' + tierOf(r.f));
+    count.appendChild(el('i', 'xfl-count-k', '粉丝'));
+    count.appendChild(document.createTextNode(fmtCount(r.f)));
+    badge.appendChild(count);
     for (const [cls, text] of shownTags(r)) badge.appendChild(el('span', 'xfl-tag xfl-tag-' + cls, text));
   }
 
@@ -419,7 +429,7 @@
     const sig = [settingsRev, key, r.f, shownTags(r).map((t) => t[0]).join(',')].join('|');
     if (badge && badge.dataset.sig === sig) return;
     if (!badge) {
-      badge = el('span', 'xfl-badge');
+      badge = keepOriginal(el('span', 'xfl-badge'));
       // 徽标有自己的详情卡，鼠标移上来时不再触发 X 自带的资料卡
       badge.addEventListener('mouseover', (e) => e.stopPropagation());
       host.appendChild(badge);
@@ -508,7 +518,7 @@
 
   function buildCard(key) {
     const r = users[key];
-    const box = el('div', 'xfl-card');
+    const box = keepOriginal(el('div', 'xfl-card'));
     const head = el('div', 'xfl-card-head');
     head.appendChild(el('strong', null, r.n || r.h));
     head.appendChild(el('span', null, '@' + r.h));
@@ -517,7 +527,8 @@
     const stats = el('div', 'xfl-stats');
     stats.appendChild(statCell('粉丝', fmtFull(r.f)));
     stats.appendChild(statCell('关注', fmtFull(r.g)));
-    stats.appendChild(statCell('粉丝/关注', r.g ? trim1(r.f / r.g) : '—'));
+    const ratio = r.g ? r.f / r.g : null;
+    stats.appendChild(statCell('粉丝/关注', ratio == null ? '—' : ratio >= 10000 ? fmtCount(Math.round(ratio)) : trim1(ratio)));
     box.appendChild(stats);
 
     if (r.c) box.appendChild(cardRow('注册', new Date(r.c).toISOString().slice(0, 7) + '（' + fmtAge(r.c) + '）'));
@@ -716,7 +727,7 @@
     const name = el('div', 'xfl-p-name');
     name.appendChild(el('strong', null, (u && u.n) || handle));
     if (u) {
-      const badge = el('span', 'xfl-badge');
+      const badge = keepOriginal(el('span', 'xfl-badge'));
       badge.dataset.h = row.key;
       fillBadge(badge, u);
       name.appendChild(badge);
@@ -851,7 +862,7 @@
       scheduleSave();
     }
     if (!panel) {
-      panel = el('div');
+      panel = keepOriginal(el('div'));
       panel.id = 'xfl-rt-panel';
     }
     if (panel.nextElementSibling !== anchor) anchor.parentElement.insertBefore(panel, anchor);

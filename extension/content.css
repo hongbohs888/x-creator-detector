@@ -56,6 +56,7 @@
   color: var(--xfl-c0);
   background: color-mix(in srgb, var(--xfl-c0) 14%, transparent);
 }
+.xfl-count-k { margin-right: 3px; font-style: normal; font-weight: 500; opacity: 0.85; }
 .xfl-t1 { color: var(--xfl-c1); background: color-mix(in srgb, var(--xfl-c1) 14%, transparent); }
 .xfl-t2 { color: var(--xfl-c2); background: color-mix(in srgb, var(--xfl-c2) 15%, transparent); }
 .xfl-t3 { color: var(--xfl-c3); background: color-mix(in srgb, var(--xfl-c3) 16%, transparent); }
